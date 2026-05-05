@@ -1,6 +1,9 @@
 <Solution>
   <Folder Name="/docs/" />
   <Folder Name="/docs/images/" />
+  <Folder Name="/docs/images/ModularFramework.DependencyInjection/">
+    <File Path="docs/images/ModularFramework.DependencyInjection/attribute_interface.PNG" />
+  </Folder>
   <Folder Name="/ModularFramework.Data/">
     <Project Path="ModularFramework.Data/ModularFramework.Data.Query/ModularFramework.Data.Query.csproj" />
   </Folder>
