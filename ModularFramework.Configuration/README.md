@@ -102,3 +102,18 @@ var app = builder.Build();
 app.Run();
 
 ```
+
+
+## 🔄 동작 구조
+
+Assembly Scan
+        ↓
+ConfigurationRegister Attribute 탐색
+        ↓
+JSON 파일 로드 (optional)
+        ↓
+설정 섹션 결정 (FullName → Name → Root)
+        ↓
+객체 바인딩 (Bind)
+        ↓
+Singleton 등록
