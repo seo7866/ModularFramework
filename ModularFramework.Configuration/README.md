@@ -4,18 +4,18 @@
 
 ---
 
+## 💡 설계 의도
+
+설정 파일과 코드 바인딩을 분리하지 않고  
+어트리뷰트 기반 선언만으로 설정 객체를 자동 등록합니다.
+
+---
+
 ## 📌 개요
 
 ModularFramework.Configuration은  
 어셈블리 스캔을 통해 설정 모델을 자동 탐색하고  
 JSON 설정 파일과 바인딩하여 DI 컨테이너에 등록합니다.
-
----
-
-## 💡 설계 의도
-
-설정 파일과 코드 바인딩을 분리하지 않고  
-어트리뷰트 기반 선언만으로 설정 객체를 자동 등록합니다.
 
 ---
 
@@ -106,14 +106,17 @@ app.Run();
 
 ## 🔄 동작 구조
 
+```text
 Assembly Scan
-        ↓
+   ↓
 ConfigurationRegister Attribute 탐색
-        ↓
-JSON 파일 로드 (optional)
-        ↓
+   ↓
+설정 소스 결정 (FileName 존재 시 포함)
+   ↓
 설정 섹션 결정 (FullName → Name → Root)
-        ↓
+   ↓
 객체 바인딩 (Bind)
-        ↓
+   ↓
 Singleton 등록
+```
+

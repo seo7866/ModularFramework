@@ -4,17 +4,17 @@
 
 ---
 
+## 💡 설계 의도
+
+DI 등록 위치 추적 문제를 제거하고, 선언 기반(Service Declaration) 구조로 전환합니다.
+
+---
+
 ## 📌 개요
 
 ModularFramework.DependencyInjection은  
 런타임 어셈블리 스캔을 통해 어트리뷰트가 선언된 클래스를 자동으로 탐색하고  
 DI 컨테이너에 등록하는 기능을 제공합니다.
-
----
-
-## 💡 설계 의도
-
-DI 등록 위치 추적 문제를 제거하고, 선언 기반(Service Declaration) 구조로 전환합니다.
 
 ---
 
