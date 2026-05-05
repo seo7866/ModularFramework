@@ -2,4 +2,5 @@
   <Folder Name="/Shared.Data/" />
   <Folder Name="/WebViewKit/" />
   <Project Path="ModularFramework.Core/ModularFramework.Core.csproj" />
+  <Project Path="ModularFramework.DependencyInjection/ModularFramework.DependencyInjection.csproj" />
 </Solution>
