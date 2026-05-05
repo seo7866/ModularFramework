@@ -26,11 +26,35 @@ DI 컨테이너에 등록하는 기능을 제공합니다.
 ### 1. ViewModel 또는 Service에 어트리뷰트 선언
 
 #### 1) 인터페이스 미포함
-<img src="../docs/images/ModularFramework.DependencyInjection/attribute.png" alt="attribute">
+
+```csharp
+using ModularFramework.DependencyInjection.Attributes;
+using ModularFramework.DependencyInjection.Enums;
+
+[DependencyInjection(DependencyInjectionLifeTime.Singleton)]
+public class DependencyInjectionExample
+{
+}
+```
 
 #### 2) 인터페이스 포함
-<img src="../docs/images/ModularFramework.DependencyInjection/attribute_interface.png" alt="attribute_interface">
 
+```csharp
+using ModularFramework.DependencyInjection.Attributes;
+using ModularFramework.DependencyInjection.Enums;
+
+[DependencyInjection(DependencyInjectionLifeTime.Singleton, typeof(IDependencyInjectionExample))]
+public class DependencyInjectionExample
+{
+}
+```
 
 ### 2. 서비스 등록
-<img src="../docs/images/ModularFramework.DependencyInjection/register.png" alt="register">
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using ModularFramework.DependencyInjection.Extensions;
+
+var services = new ServiceCollection();
+services.AddAutoRegister();
+```
