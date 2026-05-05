@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/Shared.Data/" />
+  <Folder Name="/WebViewKit/" />
+  <Project Path="ModularFramework.Core/ModularFramework.Core.csproj" />
+</Solution>
