@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
@@ -11,16 +12,12 @@ namespace WebViewKit
         private static readonly ConcurrentDictionary<CoreWebView2, SemaphoreSlim> WebView2Locks = new();
         private static readonly ConcurrentDictionary<CoreWebView2, bool> WebView2IsCrawlingMode = new();
 
-        public static async Task InitializeAsync(this CoreWebView2 coreWebView, string fristUri, bool isCrawlingMode,
-            bool areDefaultScriptDialogsEnabled, bool isStatusBarEnabled, bool areDevToolsEnabled, bool isWebMessageEnabled)
+        public static async Task InitializeAsync(this CoreWebView2 coreWebView)
         {
             WebView2Locks.TryAdd(coreWebView, new SemaphoreSlim(1, 1));
             WebView2IsCrawlingMode.TryAdd(coreWebView, false);
 
             coreWebView.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
-            await coreWebView.UpdateSetting(isCrawlingMode, areDefaultScriptDialogsEnabled,
-                isStatusBarEnabled, areDevToolsEnabled, isWebMessageEnabled);
-            await coreWebView.NavigateWithAwaitAsync(fristUri);
         }
 
         public static async Task UpdateSetting(this CoreWebView2 coreWebView, bool isCrawlingMode,
@@ -165,8 +162,7 @@ namespace WebViewKit
                 e.ResultFilePath = fullPath;
                 e.Handled = true;
                 // 중요: 내부 상태 변경 이벤트 정의
-                EventHandler<object> stateHandler = null;
-                stateHandler = (s, ev) =>
+                void stateHandler(object s, object ev)
                 {
                     // 1. 진행률 계산
                     // 에러 메시지로 보아 이미 ulong 형식이므로 바로 가져옵니다.
@@ -199,7 +195,8 @@ namespace WebViewKit
                         }
                     }
 
-                };
+                }
+
                 e.DownloadOperation.StateChanged += stateHandler;
             }
 
