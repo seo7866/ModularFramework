@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using ModularFramework.Configuration.Attributes;
-using ModularFramework.Core.Helpers;
+using ModularFramework.Core.Resolvers;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -23,7 +23,7 @@ namespace ModularFramework.Configuration.Extensions
         public static IServiceCollection AddAutoConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
             // 1. 이 라이브러리를 참조하는 어셈블리들을 싹 긁어옵니다.
-            var assemblies = AssemblyHelper.GetDependentAssemblies(Assembly.GetExecutingAssembly());
+            var assemblies = AssemblyDependencyResolver.GetDependentAssemblies(Assembly.GetExecutingAssembly());
             var types = assemblies.SelectMany(a => a.GetTypes()).Where(t => t.IsClass && !t.IsAbstract);
 
             foreach (var type in types)

@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 
-namespace ModularFramework.Core.Helpers
+namespace ModularFramework.Core.Resolvers
 {
-    public static class AssemblyHelper
+    public static class AssemblyDependencyResolver
     {
         /// <summary>
         /// 현재 도메인의 모든 DLL을 스캔하여 특정 어셈블리를 참조하고 있는 의존 어셈블리 목록을 가져옵니다.
@@ -43,10 +43,9 @@ namespace ModularFramework.Core.Helpers
             }
 
             // 4. 기준 어셈블리를 참조하고 있는 것들만 필터링하여 반환
-            return loadedAssemblies
+            return [.. loadedAssemblies
                 .Where(a => a.Equals(targetAssembly) ||
-                            a.GetReferencedAssemblies().Any(r => r.FullName == targetFullName))
-                .ToArray();
+                            a.GetReferencedAssemblies().Any(r => r.FullName == targetFullName))];
         }
     }
 }

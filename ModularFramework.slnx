@@ -1,4 +1,6 @@
 <Solution>
+  <Folder Name="/docs/" />
+  <Folder Name="/docs/images/" />
   <Folder Name="/ModularFramework.Data/">
     <Project Path="ModularFramework.Data/ModularFramework.Data.Query/ModularFramework.Data.Query.csproj" />
   </Folder>
@@ -6,6 +8,9 @@
     <Project Path="WebViewKit/WebViewKit.WinForms/WebViewKit.WinForms.csproj" />
     <Project Path="WebViewKit/WebViewKit.WPF/WebViewKit.WPF.csproj" />
     <Project Path="WebViewKit/WebViewKit/WebViewKit.csproj" />
+  </Folder>
+  <Folder Name="/솔루션 항목/">
+    <File Path="README.md" />
   </Folder>
   <Project Path="ModularFramework.Configuration/ModularFramework.Configuration.csproj" />
   <Project Path="ModularFramework.Core/ModularFramework.Core.csproj" />
