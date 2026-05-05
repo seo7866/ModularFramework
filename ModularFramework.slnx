@@ -1,6 +1,12 @@
 <Solution>
-  <Folder Name="/Shared.Data/" />
-  <Folder Name="/WebViewKit/" />
+  <Folder Name="/ModularFramework.Data/">
+    <Project Path="ModularFramework.Data/ModularFramework.Data.Query/ModularFramework.Data.Query.csproj" />
+  </Folder>
+  <Folder Name="/WebViewKit/">
+    <Project Path="WebViewKit/WebViewKit.WinForms/WebViewKit.WinForms.csproj" />
+    <Project Path="WebViewKit/WebViewKit.WPF/WebViewKit.WPF.csproj" />
+    <Project Path="WebViewKit/WebViewKit/WebViewKit.csproj" />
+  </Folder>
   <Project Path="ModularFramework.Configuration/ModularFramework.Configuration.csproj" />
   <Project Path="ModularFramework.Core/ModularFramework.Core.csproj" />
   <Project Path="ModularFramework.DependencyInjection/ModularFramework.DependencyInjection.csproj" />

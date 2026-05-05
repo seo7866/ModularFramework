@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ModularFramework.Core.Helpers;
 using ModularFramework.DependencyInjection.Attributes;
 using ModularFramework.DependencyInjection.Enums;
 using System;
@@ -23,7 +24,7 @@ namespace ModularFramework.DependencyInjection.Extensions
         /// <returns>구성이 완료된 IServiceCollection</returns>
         public static IServiceCollection AddAutoRegister(this IServiceCollection services, Dictionary<Type, DependencyInjectionLifeTime> overrides = null)
         {
-            overrides ?? = new();
+            overrides ??= new();
             var currentLibrary = Assembly.GetExecutingAssembly();
             var assemblies = AssemblyHelper.GetDependentAssemblies(currentLibrary);
             var types = assemblies.SelectMany(a => a.GetTypes())

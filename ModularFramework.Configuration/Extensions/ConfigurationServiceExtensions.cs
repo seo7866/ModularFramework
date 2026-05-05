@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using ModularFramework.Configuration.Attributes;
+using ModularFramework.Core.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Reflection;

@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ModularFramework.Core\ModularFramework.Core.csproj" />
+  </ItemGroup>
+
 </Project>
