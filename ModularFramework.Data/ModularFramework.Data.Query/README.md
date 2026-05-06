@@ -1,6 +1,7 @@
 ﻿# ModularFramework.Data.Query
 
 텍스트 기반 SQL 파일을 관리하고, 메서드 정보를 기반으로 쿼리를 자동 매핑하여 실행할 수 있도록 지원하는 Query Provider 모듈입니다.
+이 모듈은 SQL 실행 라이브러리가 아니라 Method 기반 Query Resolution 시스템입니다.
 
 ---
 
