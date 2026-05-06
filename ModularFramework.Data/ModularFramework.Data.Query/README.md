@@ -120,9 +120,11 @@ Type FullName 기반으로 SQL 파일 경로를 생성합니다.
 
 Assembly Name 제거
    ↓
-Type.FullName 기준 사용
+Type.FullName 사용
    ↓
 Namespace → 폴더 구조 변환
+   ↓
+Class Name → 마지막 폴더
    ↓
 Method Name → SQL 파일명
 
