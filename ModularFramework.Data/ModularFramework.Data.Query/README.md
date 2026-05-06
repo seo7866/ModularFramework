@@ -1,6 +1,7 @@
 ﻿# ModularFramework.Data.Query
 
 텍스트 기반 SQL 파일을 관리하고, 메서드 정보를 기반으로 쿼리를 자동 매핑하여 실행할 수 있도록 지원하는 Query Provider 모듈입니다.
+이 모듈은 SQL 실행 라이브러리가 아니라 Method 기반 Query Resolution 시스템입니다.
 
 ---
 
@@ -11,6 +12,8 @@ SQL을 코드에서 분리하여 관리하고,
 
 또한, 별도의 설정 없이도 동작하도록 컨벤션 기반 구조를 제공하여  
 사용자의 실수를 최소화하는 것을 목표로 합니다.
+
+이 모듈은 SQL 실행기가 아니라, 메서드 기반 Query Resolution 시스템입니다.
 
 ---
 
@@ -230,6 +233,7 @@ public IRelayCommand LoadUserCommand => new RelayCommand(async () =>
 - Attribute / Convention 동일 방식 사용
 - DI 기반으로 주입
 - 호출 위치만으로 SQL 결정
+- Query Key를 문자열이 아닌 MethodBase로 사용하는 이유는 호출 위치와 SQL 간 결합을 제거하기 위함
 
 
 ## ⚡ Async 및 WPF 지원
@@ -340,6 +344,8 @@ Attribute 존재 여부 확인
    └─ 없음 → Convention 기반 경로 생성
    ↓
 실제 메서드 추적 (async 대응)
+   ↓
+경로 생성 (Attribute or Convention)
    ↓
 파일 로드
    ↓
