@@ -12,7 +12,7 @@ namespace ModularFramework.Data.Query.Attributes
     {
         public string Path { get; }
 
-        public QueryPathAttribute(string path)
+        public QueryPathAttribute(string path = "")
         {
             // 운영체제 간 호환성을 위해 모든 경로 구분자를 '/'로 통일하여 저장
             Path = path?.Replace('\\', '/') ?? string.Empty;

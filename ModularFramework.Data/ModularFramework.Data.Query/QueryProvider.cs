@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -46,6 +47,8 @@ namespace ModularFramework.Data.Query
         /// </summary>
         public string GetQuery(MethodBase method)
         {
+            method = this.GetActualMethod(method);
+
             // 1. 메서드별 캐시 항목 가져오기 (없으면 생성)
             var entry = _methodCache.GetOrAdd(method, m => new QueryCacheEntry(GetFullPath(m)));
 
@@ -53,12 +56,30 @@ namespace ModularFramework.Data.Query
             return entry.GetOrUpdateContent();
         }
 
+        private MethodBase GetActualMethod(MethodBase method)
+        {
+            // 1. 현재 메서드가 컴파일러가 생성한 비동기 상태 머신(MoveNext)인지 확인
+            if (method.Name == "MoveNext" && method.DeclaringType != null && method.DeclaringType.IsDefined(typeof(CompilerGeneratedAttribute), true))
+            {
+                // 2. 상태 머신 클래스의 '상위 클래스'에서 원본 메서드를 찾음
+                var actualType = method.DeclaringType.DeclaringType;
+                if (actualType == null) return method;
+
+                // 3. 원본 클래스의 메서드들 중, 이 상태 머신을 사용하는 메서드를 역추적
+                var candidate = actualType.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static)
+                    .FirstOrDefault(m => m.GetCustomAttribute<AsyncStateMachineAttribute>()?.StateMachineType == method.DeclaringType);
+
+                return candidate ?? method;
+            }
+
+            return method;
+        }
+
         private string GetFullPath(MethodBase method)
         {
             var attr = method.GetCustomAttribute<QueryPathAttribute>();
             // 어트리뷰트에서 이미 \ -> / 변환이 완료됨
-            string relativePath = attr?.Path ?? BuildDefaultPath(method);
-
+            string relativePath = attr != null && !string.IsNullOrWhiteSpace(attr.Path) ? attr.Path : BuildDefaultPath(method);
             return Path.GetFullPath(Path.Combine(QueryProviderOption.BasePath, relativePath));
         }
 
@@ -70,6 +91,13 @@ namespace ModularFramework.Data.Query
             string nsPath = type.Namespace?.Replace(assemblyName, "").Replace('.', '/') ?? "";
             return $"{nsPath.Trim('/')}/{type.Name}/{method.Name}.sql".TrimStart('/');
         }
+
+
+
+
+
+
+
 
         /// <summary>
         /// 메서드당 하나씩 할당되어 파일의 상태를 추적하는 내부 클래스
