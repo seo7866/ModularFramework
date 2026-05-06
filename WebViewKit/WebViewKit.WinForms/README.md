@@ -1,39 +1,46 @@
 ﻿# WebViewKit.WinForms
 
-WinForms 환경에서 WebView2 사용을 단순화하기 위한 래퍼 라이브러리입니다.
+WinForms 환경에서 WebView2 기능을 단순화하여 사용할 수 있도록 제공하는 래퍼입니다.
 
 ---
 
 ## 📌 개요
 
-WebViewKit.WinForms는 WinForms 기반 WebView2 컨트롤을 래핑하여  
-초기화 및 이벤트 처리를 내부에서 자동으로 수행합니다.
+WebViewKit.WinForms는 WebViewKit.Core 기능을 WinForms 환경에서  
+직접 사용하기 쉽게 감싼 래퍼 라이브러리입니다.
 
-개발자는 WebViewKit.Core에서 제공하는 기능만 호출하여  
-WebView2 기능을 사용할 수 있습니다.
+초기화 및 복잡한 WebView2 이벤트 처리를 내부에서 처리하여  
+개발자는 기능 호출에만 집중할 수 있도록 설계되었습니다.
 
 ---
 
-## ⚙ 주요 특징
+## 💡 설계 의도
 
+WinForms 환경에서 WebView2 사용 시 발생하는 다음 문제를 해결합니다:
+
+- 초기화 코드 반복
+- 이벤트 등록/해제 복잡도
+- 비동기 처리 구조 분산
+
+이를 해결하기 위해 Core 기능을 직접 노출하지 않고  
+단순 API 형태로 제공합니다.
+
+---
+
+## ⚙ 제공 기능
+
+WinForms에서는 Core 기능을 다음 형태로 제공합니다:
+
+- NavigateWithAwaitAsync
+- DownloadFileAsync
+- GetCurrentHtmlAsync
+
+---
+
+## 🧩 구조 특징
+
+- Core 기능 1:1 래핑 구조
 - WebView2 초기화 자동 처리
-- Core API 1:1 매핑 구조
-- 이벤트 처리 캡슐화
-- 비동기 Navigation / Download 지원
+- UI 이벤트 캡슐화
 - WinForms 환경 최적화
-
----
-
-## 🧩 구조
-
-- WebView2 컨트롤 래핑
-- WebViewKit.Core 기능 직접 사용
-- UI 이벤트 최소화 구조
-- WinForms 특화 이벤트 처리
-
----
-
-## 💡 설계 목적
-
-WinForms 환경에서 WebView2 초기화 및 이벤트 처리 코드를 제거하고  
-핵심 기능만 사용하는 구조를 제공하는 것이 목적입니다.
+- Core 의존 구조 유지
