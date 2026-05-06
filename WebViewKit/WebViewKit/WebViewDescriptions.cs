@@ -12,5 +12,6 @@ namespace WebViewKit
         public const string IsStatusBarEnabled = "하단 상태 표시줄(URL 미리보기 등) 표시 여부입니다.";
         public const string AreDevToolsEnabled = "F12 개발자 도구 활성화 여부입니다.";
         public const string IsWebMessageEnabled = "브라우저와 C# 간의 WebMessage 통신 허용 여부입니다.";
+        public const string IsPopupBlocked = "새로운 창을 띄우는 팝업을 차단합니다.";
     }
 }

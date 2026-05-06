@@ -28,11 +28,12 @@ WebViewKit.WPF는 이를 통합하여 동일 API를 제공합니다.
 
 ## 🧠 특징
 
-- WPF WebView2 래핑
+- WPF WebView2 컨트롤 래핑
 - Core 인터페이스 구현
-- MVVM 환경 대응
+- Core 초기화 로직 기반 동작
+- MVVM 패턴과 연동 가능
 - Command 기반 연동 가능
-- 비동기 초기화 지원
+- 비동기 초기화 내부 처리
 
 ---
 

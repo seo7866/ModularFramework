@@ -50,7 +50,8 @@ namespace WebViewKit.WinForms
         public void ApplySettings()
         {
             // 디자인 모드이거나 엔진이 초기화 전이면 무시
-            if (this.DesignMode || this.CoreWebView2 == null) return;
+            if (this.DesignMode || this.CoreWebView2 == null) 
+                return;
 
             _ = ApplySettingsInternalAsync();
         }
@@ -65,7 +66,8 @@ namespace WebViewKit.WinForms
                     this.WebViewKitSettings.AreDefaultScriptDialogsEnabled,
                     this.WebViewKitSettings.IsStatusBarEnabled,
                     this.WebViewKitSettings.AreDevToolsEnabled,
-                    this.WebViewKitSettings.IsWebMessageEnabled);
+                    this.WebViewKitSettings.IsWebMessageEnabled,
+                    this.WebViewKitSettings.IsPopupBlocked);
             }
             catch (Exception ex)
             {

@@ -26,8 +26,9 @@ WebViewKit.Core 기능을 WinForms 방식으로 구현합니다.
 
 ## 🧠 특징
 
-- WebView2 WinForms Wrapper
+- WebView2 WinForms 컨트롤 래핑
 - Core API 1:1 매핑
+- Core에서 제공하는 초기화 자동 처리 로직 사용
 - UI 이벤트 캡슐화
 - 비동기 작업 지원
 

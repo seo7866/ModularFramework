@@ -84,7 +84,8 @@ namespace WebViewKit.WPF
                     WebViewKitSettings.AreDefaultScriptDialogsEnabled,
                     WebViewKitSettings.IsStatusBarEnabled,
                     WebViewKitSettings.AreDevToolsEnabled,
-                    WebViewKitSettings.IsWebMessageEnabled);
+                    WebViewKitSettings.IsWebMessageEnabled,
+                    WebViewKitSettings.IsPopupBlocked);
             }
             catch (Exception ex)
             {

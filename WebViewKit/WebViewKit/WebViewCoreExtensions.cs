@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
@@ -9,35 +10,42 @@ namespace WebViewKit
 {
     public static class WebViewCoreExtensions
     {
-        private static readonly ConcurrentDictionary<CoreWebView2, SemaphoreSlim> WebView2Locks = new();
-        private static readonly ConcurrentDictionary<CoreWebView2, bool> WebView2IsCrawlingMode = new();
+        private static readonly ConcurrentDictionary<CoreWebView2, WebViewCoreExtensionsInfo> WebView2Info = new();
 
         public static async Task InitializeAsync(this CoreWebView2 coreWebView)
         {
-            WebView2Locks.TryAdd(coreWebView, new SemaphoreSlim(1, 1));
-            WebView2IsCrawlingMode.TryAdd(coreWebView, false);
+            WebView2Info.TryAdd(coreWebView, new());
 
             coreWebView.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
+            coreWebView.NewWindowRequested += CoreWebView_NewWindowRequested;
+        }
+
+        private static async void CoreWebView_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            WebViewCoreExtensionsInfo info = (sender as CoreWebView2).GetInfo();
+            e.Handled = info.IsPopupBlocked;
         }
 
         public static async Task UpdateSetting(this CoreWebView2 coreWebView, bool isCrawlingMode,
-            bool areDefaultScriptDialogsEnabled, bool isStatusBarEnabled, bool areDevToolsEnabled, bool isWebMessageEnabled)
+            bool areDefaultScriptDialogsEnabled, bool isStatusBarEnabled, bool areDevToolsEnabled, bool isWebMessageEnabled,
+            bool isPopupBlocked)
         {
             coreWebView.Settings.AreDefaultScriptDialogsEnabled = areDefaultScriptDialogsEnabled;
             coreWebView.Settings.IsStatusBarEnabled = isStatusBarEnabled;
             coreWebView.Settings.AreDevToolsEnabled = areDevToolsEnabled;
             coreWebView.Settings.IsWebMessageEnabled = isWebMessageEnabled;
+            await coreWebView.UpdateIsPopupBlocked(isPopupBlocked);
             await coreWebView.UpdateIsCrawlingMode(isCrawlingMode);
         }
 
         public static async Task UpdateIsCrawlingMode(this CoreWebView2 coreWebView, bool enable)
         {
-            var semaphore = coreWebView.GetSemaphoreSlim();
-            await semaphore.WaitAsync();
+            WebViewCoreExtensionsInfo info = coreWebView.GetInfo();
+            await info.SemaphoreSlim.WaitAsync();
 
             try
             {
-                if (coreWebView.GetIsCrawlingMode() == enable)
+                if (info.IsCrawlingMod == enable)
                     return;
 
                 //실제 이벤트 등록/해제 처리
@@ -50,19 +58,24 @@ namespace WebViewKit
                     coreWebView.WebResourceRequested -= CoreWebView_WebResourceRequested;
                 }
                 //상태 저장소 업데이트
-                WebView2IsCrawlingMode[coreWebView] = enable;
+                info.IsCrawlingMod = enable;
             }
             finally
             {
-                semaphore.Release();
+                info.SemaphoreSlim.Release();
             }
+        }
+
+        public static async Task UpdateIsPopupBlocked(this CoreWebView2 coreWebView, bool enable)
+        {
+            WebViewCoreExtensionsInfo info = coreWebView.GetInfo();
+            info.IsPopupBlocked = enable;
         }
 
         public static void DisposeWebView(this CoreWebView2 coreWebView)
         {
             // 등록된 자물쇠와 상태값 제거
-            WebView2Locks.TryRemove(coreWebView, out _);
-            WebView2IsCrawlingMode.TryRemove(coreWebView, out _);
+            WebView2Info.TryRemove(coreWebView, out _);
         }
 
         private static void CoreWebView_WebResourceRequested(object sender, CoreWebView2WebResourceRequestedEventArgs e)
@@ -88,8 +101,8 @@ namespace WebViewKit
             string url,
             int timeoutMilliseconds = 60000)
         {
-            var semaphore = coreWebView.GetSemaphoreSlim();
-            await semaphore.WaitAsync();
+            var info = coreWebView.GetInfo();
+            await info.SemaphoreSlim.WaitAsync();
             var tcs = new TaskCompletionSource<CoreWebView2NavigationCompletedEventArgs>();
             bool isRemoved = false; // 이벤트가 제거되었는지 추적하는 플래그
             // 일회성 이벤트 핸들러 정의
@@ -130,7 +143,7 @@ namespace WebViewKit
                     coreWebView.NavigationCompleted -= Handler;
                     isRemoved = true;
                 }
-                semaphore.Release();
+                info.SemaphoreSlim.Release();
             }
         }
 
@@ -243,20 +256,23 @@ namespace WebViewKit
             }
         }
 
-        private static SemaphoreSlim GetSemaphoreSlim(this CoreWebView2 coreWebView)
+        private static WebViewCoreExtensionsInfo GetInfo(this CoreWebView2 coreWebView)
         {
-            if (!WebView2Locks.TryGetValue(coreWebView, out SemaphoreSlim semaphore) || semaphore == null)
+            if (!WebView2Info.TryGetValue(coreWebView, out var value) || value == null)
+            {
                 throw new InvalidOperationException(
                     "WebViewCoreExtensions: InitializeAsync를 먼저 호출하여 웹뷰를 초기화해야 합니다.");
-            return semaphore;
+            }
+            return value;
         }
 
-        private static bool GetIsCrawlingMode(this CoreWebView2 coreWebView)
+        private class WebViewCoreExtensionsInfo
         {
-            if (!WebView2IsCrawlingMode.TryGetValue(coreWebView, out bool isCrawlingMode))
-                throw new InvalidOperationException(
-                    "WebViewCoreExtensions: InitializeAsync를 먼저 호출하여 웹뷰를 초기화해야 합니다.");
-            return isCrawlingMode;
+            internal SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
+
+            internal bool IsCrawlingMod { get; set; } = false;
+
+            internal bool IsPopupBlocked { get; set; } = false;
         }
     }
 }

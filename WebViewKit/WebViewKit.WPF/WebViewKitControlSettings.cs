@@ -29,6 +29,14 @@ namespace WebViewKit.WPF
         public static readonly DependencyProperty IsCrawlingModeProperty =
             DependencyProperty.Register("IsCrawlingMode", typeof(bool), typeof(WebViewKitControlSettings), new PropertyMetadata(false, OnSettingChanged));
 
+        public bool IsPopupBlocked
+        {
+            get => (bool)GetValue(IsPopupBlockedProperty);
+            set => SetValue(IsPopupBlockedProperty, value);
+        }
+        public static readonly DependencyProperty IsPopupBlockedProperty =
+            DependencyProperty.Register("IsPopupBlocked", typeof(bool), typeof(WebViewKitControlSettings), new PropertyMetadata(false, OnSettingChanged));
+
         /// <summary>
         /// <inheritdoc cref="WebViewDescriptions.FirstUri"/>
         /// </summary>

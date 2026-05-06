@@ -105,7 +105,8 @@ namespace ModularFramework.Data.Query
 
             public string GetOrUpdateContent()
             {
-                if (!File.Exists(filePath)) return string.Empty;
+                if (!File.Exists(filePath)) 
+                    return string.Empty;
 
                 long nowTicks = DateTime.UtcNow.Ticks;
                 long lastCheckTicks = Interlocked.Read(ref _lastCheckTicks);
