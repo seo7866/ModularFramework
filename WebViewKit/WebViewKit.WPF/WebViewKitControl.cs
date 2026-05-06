@@ -28,13 +28,14 @@ namespace WebViewKit.WPF
             set { SetValue(WebViewKitSettingsProperty, value); }
         }
         public static readonly DependencyProperty WebViewKitSettingsProperty =
-            DependencyProperty.Register("SharedSettings", typeof(WebViewKitControlSettings), typeof(WebViewKitControl), new PropertyMetadata(null));
+            DependencyProperty.Register("WebViewKitSettings", typeof(WebViewKitControlSettings), typeof(WebViewKitControl), new PropertyMetadata(null));
 
         private async void WebViewKitControl_Loaded(object sender, RoutedEventArgs e)
         {
             base.Loaded -= WebViewKitControl_Loaded;
             // 디자이너 모드 체크 (WPF 방식)
-            if (DesignerProperties.GetIsInDesignMode(this)) return;
+            if (DesignerProperties.GetIsInDesignMode(this)) 
+                return;
 
             try
             {
