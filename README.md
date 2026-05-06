@@ -77,9 +77,9 @@ WebView2 기능을 API 형태로 제공하는 모듈
 ```text
 
 Class / Method / Property → Attribute 선언  
-↓  
+	↓
 Runtime Scan  
-↓  
+	↓
 자동 등록 / 바인딩
 
 ```
@@ -113,17 +113,17 @@ Runtime Scan
 ```text
 
 Application Start  
-↓  
+	↓
 Assembly Scan  
-↓  
+	↓
 DI Auto Registration  
-↓  
+	↓
 Configuration Auto Binding  
-↓  
+	↓
 Query Provider Initialization  
-↓  
+	↓
 WebViewKit Initialization  
-↓  
+	↓
 Application Runtime
 
 ```

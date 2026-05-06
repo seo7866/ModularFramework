@@ -112,15 +112,15 @@ app.Run();
 ```text
 
 Assembly Scan
-   ↓
+    ↓
 ConfigurationRegister Attribute 탐색
-   ↓
+    ↓
 설정 소스 결정 (FileName 존재 시 포함)
-   ↓
+    ↓
 설정 섹션 결정 (FullName → Name → Root)
-   ↓
+    ↓
 객체 바인딩 (Bind)
-   ↓
+    ↓
 Singleton 등록
 
 ```
