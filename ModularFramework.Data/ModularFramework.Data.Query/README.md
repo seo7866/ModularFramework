@@ -114,7 +114,7 @@ public async Task<List<User>> GetUsers()
 
 ### 매핑 규칙
 
-Type FullName 기준으로 SQL 파일 경로를 생성합니다.
+Type FullName 기반으로 SQL 파일 경로를 생성합니다.
 
 ```text
 
@@ -136,10 +136,11 @@ Method Name → SQL 파일명
 
 ```text
 
-Assembly Name : MyApp
-Namespace: MyApp.Services.User
-Class: UserInfo
-Method: GetUser
+Type:
+MyApp.Services.User.UserInfo
+
+Method:
+GetUser
 
 ```
 
