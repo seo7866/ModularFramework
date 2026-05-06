@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ModularFramework.Data.Query
+namespace ModularFramework.Data.Query.Options
 {
     /// <summary>
     /// QueryProvider의 동작을 제어하는 전역 설정 클래스입니다.

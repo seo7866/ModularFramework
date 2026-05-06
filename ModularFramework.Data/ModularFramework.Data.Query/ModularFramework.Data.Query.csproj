@@ -11,4 +11,8 @@
     <ProjectReference Include="..\..\ModularFramework.DependencyInjection\ModularFramework.DependencyInjection.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+
 </Project>

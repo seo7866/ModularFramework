@@ -1,4 +1,5 @@
 ﻿using ModularFramework.Data.Query.Attributes;
+using ModularFramework.Data.Query.Options;
 using ModularFramework.DependencyInjection.Attributes;
 using ModularFramework.DependencyInjection.Enums;
 using System;
@@ -11,10 +12,6 @@ using System.Text.RegularExpressions;
 
 namespace ModularFramework.Data.Query
 {
-    /// <summary>
-    /// [자동 주입] 프로그램 전체에서 단 하나의 인스턴스(Singleton)로 공유되는 쿼리 제공자입니다.
-    /// </summary>
-    [DependencyInjection(DependencyInjectionLifeTime.Singleton)]
     public class QueryProvider
     {
         private readonly ConcurrentDictionary<MethodBase, QueryCacheEntry> _methodCache = new();
@@ -24,22 +21,6 @@ namespace ModularFramework.Data.Query
             // 옵션의 경로 변경 이벤트 구독
             QueryProviderOption.OnBasePathChanged += (s, e) => ClearCache();
             EnsureDirectory();
-        }
-
-        private void EnsureDirectory()
-        {
-            if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.ToLower().Contains("devenv")) return;
-            if (!Directory.Exists(QueryProviderOption.BasePath))
-                Directory.CreateDirectory(QueryProviderOption.BasePath);
-        }
-
-        private void ClearCache()
-        {
-            // 1. 기존 캐시 싹 비우기
-            _methodCache.Clear();
-            // 2. 새 경로 폴더가 있는지 확인
-            EnsureDirectory();
-            System.Diagnostics.Debug.WriteLine($"[QueryProvider] 경로 변경으로 인해 캐시가 초기화되었습니다: {QueryProviderOption.BasePath}");
         }
 
         /// <summary>
@@ -54,6 +35,23 @@ namespace ModularFramework.Data.Query
 
             // 2. 실시간 수정 반영 로직 (수정 시간 체크 후 내용 업데이트)
             return entry.GetOrUpdateContent();
+        }
+
+        private void EnsureDirectory()
+        {
+            if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.ToLower().Contains("devenv")) 
+                return;
+            if (!Directory.Exists(QueryProviderOption.BasePath))
+                Directory.CreateDirectory(QueryProviderOption.BasePath);
+        }
+
+        private void ClearCache()
+        {
+            // 1. 기존 캐시 싹 비우기
+            _methodCache.Clear();
+            // 2. 새 경로 폴더가 있는지 확인
+            EnsureDirectory();
+            System.Diagnostics.Debug.WriteLine($"[QueryProvider] 경로 변경으로 인해 캐시가 초기화되었습니다: {QueryProviderOption.BasePath}");
         }
 
         private MethodBase GetActualMethod(MethodBase method)
