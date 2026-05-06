@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ModularFramework.Data.Query.Interfaces
 {
-    public interface IQueryProvider
+    public interface IQueryExecutor
     {
         string GetQuery(MethodBase method);
     }

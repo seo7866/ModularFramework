@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using ModularFramework.Data.Query.Interfaces;
 using ModularFramework.Data.Query.Options;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ModularFramework.Data.Query.Extensions
 {
@@ -41,7 +39,7 @@ namespace ModularFramework.Data.Query.Extensions
 
             // 2. QueryProvider를 싱글톤으로 등록
             // 생성자 내부에서 EnsureDirectory() 등을 통해 경로 유효성을 스스로 검증합니다.
-            services.AddSingleton<QueryProvider>();
+            services.AddSingleton<IQueryExecutor, QueryProvider>();
 
             return services;
         }

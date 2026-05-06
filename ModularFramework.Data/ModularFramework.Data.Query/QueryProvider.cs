@@ -1,16 +1,14 @@
 ﻿using ModularFramework.Data.Query.Attributes;
+using ModularFramework.Data.Query.Interfaces;
 using ModularFramework.Data.Query.Options;
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ModularFramework.Data.Query
 {
-    public class QueryProvider : IQueryProvider
+    public class QueryProvider : IQueryExecutor
     {
         private readonly ConcurrentDictionary<MethodBase, QueryCacheEntry> _methodCache = new();
 
