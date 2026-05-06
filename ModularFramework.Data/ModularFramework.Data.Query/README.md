@@ -69,6 +69,9 @@ services.AddQueryProvider(options =>
 
 QueryProvider는 두 가지 방식으로 쿼리를 찾습니다.
 
+Attribute가 존재하면 해당 경로를 우선 사용하며,
+없을 경우 Convention 기반 경로로 자동 매핑된다.
+
 ---
 
 ## ✔ 1) Attribute 기반 매핑 (명시적 방식)
