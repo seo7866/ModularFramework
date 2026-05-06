@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace ModularFramework.Data.Query
 {
-    public class QueryProvider
+    public class QueryProvider : IQueryProvider
     {
         private readonly ConcurrentDictionary<MethodBase, QueryCacheEntry> _methodCache = new();
 

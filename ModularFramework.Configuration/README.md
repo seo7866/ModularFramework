@@ -25,6 +25,9 @@ JSON 설정 파일과 바인딩하여 DI 컨테이너에 등록합니다.
 - JSON 파일 자동 로딩
 - FullName → Name → Root 우선순위 바인딩
 - Web / Desktop 환경 공용 지원
+- 메서드 기반 쿼리 자동 매핑 (Convention 기반)
+- Namespace → 폴더 구조 자동 변환
+- async 메서드 및 WPF RelayCommand 지원
 
 ---
 
@@ -107,6 +110,7 @@ app.Run();
 ## 🔄 동작 구조
 
 ```text
+
 Assembly Scan
    ↓
 ConfigurationRegister Attribute 탐색
@@ -118,5 +122,6 @@ ConfigurationRegister Attribute 탐색
 객체 바인딩 (Bind)
    ↓
 Singleton 등록
+
 ```
 
