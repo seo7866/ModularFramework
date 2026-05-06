@@ -107,7 +107,7 @@ public async Task<List<User>> GetUsers()
 
 ### 매핑 규칙
 
-``text
+```text
 
 Namespace → 폴더 경로
 Class Name → 폴더
