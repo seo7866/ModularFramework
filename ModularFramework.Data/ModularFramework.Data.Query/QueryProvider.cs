@@ -1,7 +1,5 @@
 ﻿using ModularFramework.Data.Query.Attributes;
 using ModularFramework.Data.Query.Options;
-using ModularFramework.DependencyInjection.Attributes;
-using ModularFramework.DependencyInjection.Enums;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
