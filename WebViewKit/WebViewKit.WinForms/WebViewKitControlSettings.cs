@@ -11,7 +11,7 @@ namespace WebViewKit.WinForms
         /// <summary>
         /// 설정 변경 시 컨트롤에 즉시 반영하기 위한 이벤트입니다.
         /// </summary>
-        internal event EventHandler? PropertyChanged;
+        internal event EventHandler PropertyChanged;
 
         private bool _isCrawlingMode = false;
         [Category("Custom"), DefaultValue(false)]
@@ -72,8 +72,8 @@ namespace WebViewKit.WinForms
         [Description(WebViewDescriptions.IsWebMessageEnabled)]
         public bool IsWebMessageEnabled
         {
-            get => IsWebMessageEnabled;
-            set { IsWebMessageEnabled = value; PropertyChanged?.Invoke(this, EventArgs.Empty); }
+            get => _isWebMessageEnabled;
+            set { _isWebMessageEnabled = value; PropertyChanged?.Invoke(this, EventArgs.Empty); }
         }
 
         /// <summary>

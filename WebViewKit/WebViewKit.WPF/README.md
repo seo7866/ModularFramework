@@ -1,52 +1,39 @@
 ﻿# WebViewKit.WPF
 
-WPF 환경에서 WebView2를 추상화하여  
-WebViewKit.Core 인터페이스를 구현한 모듈입니다.
+WPF 환경에서 WebView2를 MVVM 구조에 맞게 사용할 수 있도록 제공하는 래퍼 라이브러리입니다.
 
 ---
 
-## 💡 개요
+## 📌 개요
 
-WPF WebView2는 WinForms와 구조가 다르기 때문에  
-초기화 및 이벤트 처리 방식이 다릅니다.
+WebViewKit.WPF는 WPF 기반 WebView2 컨트롤을 래핑하여  
+MVVM 패턴에서도 WebView2 기능을 자연스럽게 사용할 수 있도록 설계되었습니다.
 
-WebViewKit.WPF는 이를 통합하여 동일 API를 제공합니다.
-
----
-
-## ⚙ 주요 기능
-
-- Navigate (페이지 이동)
-- HTML 추출
-- Script 실행
-- WebMessage 통신
-- Download 제어
-- DevTools 활성화
-- Crawling 모드 지원
+Command, Binding 구조에서도 WebView2 기능을 직접 사용할 수 있습니다.
 
 ---
 
-## 🧠 특징
+## ⚙ 주요 특징
 
-- WPF WebView2 컨트롤 래핑
-- Core 인터페이스 구현
-- Core 초기화 로직 기반 동작
-- MVVM 패턴과 연동 가능
-- Command 기반 연동 가능
-- 비동기 초기화 내부 처리
-
----
-
-## 🚀 설계 포인트
-
-- WPF 종속 코드 최소화
-- ViewModel과 분리된 구조
-- WinForms와 동일 API 제공
+- WebView2 초기화 자동 처리
+- MVVM 구조 대응
+- ICommand 기반 연동 가능
+- Core API 직접 사용 가능
+- 비동기 Navigation / Script 지원
+- WPF Dispatcher 환경 고려
 
 ---
 
-## 📌 구조 역할
+## 🧩 구조
 
-- WebView2 WPF 컨트롤 래핑
-- Core 기능 구현
+- WebView2 컨트롤 래핑
+- WebViewKit.Core 기능 기반 동작
 - MVVM 친화 구조
+- ViewModel 중심 확장 가능
+
+---
+
+## 💡 설계 목적
+
+WPF 환경에서 WebView2를 ViewModel과 분리된 상태로 안전하게 사용하면서도  
+Command 기반 구조에서 자연스럽게 연동될 수 있도록 하는 것이 목적입니다.

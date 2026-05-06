@@ -35,7 +35,7 @@ namespace ModularFramework.Data.Query
 
         private void EnsureDirectory()
         {
-            if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.ToLower().Contains("devenv")) 
+            if (System.Diagnostics.Process.GetCurrentProcess().ProcessName.Contains("devenv", StringComparison.CurrentCultureIgnoreCase)) 
                 return;
             if (!Directory.Exists(QueryProviderOption.BasePath))
                 Directory.CreateDirectory(QueryProviderOption.BasePath);
@@ -101,7 +101,7 @@ namespace ModularFramework.Data.Query
             private string _content = string.Empty;
             private DateTime _lastFileWriteTime = DateTime.MinValue;
             private long _lastCheckTicks = 0; // 마지막으로 파일을 확인한 시점 (성능을 위해 Ticks 사용)
-            private readonly object _lock = new();
+            private readonly Lock _lock = new();
 
             public string GetOrUpdateContent()
             {

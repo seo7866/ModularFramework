@@ -45,6 +45,6 @@ namespace ModularFramework.Data.Query.Options
         /// <summary>
         /// 경로 변경 시 QueryProvider들이 감지할 수 있는 이벤트
         /// </summary>
-        internal static event EventHandler? OnBasePathChanged;
+        internal static event EventHandler OnBasePathChanged;
     }
 }

@@ -11,7 +11,7 @@ namespace WebViewKit.WPF
     public class WebViewKitControlSettings : DependencyObject
     {
         // 설정 변경 시 컨트롤에 알리기 위한 이벤트
-        internal event EventHandler? PropertyChanged;
+        internal event EventHandler PropertyChanged;
 
         private static void OnSettingChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {

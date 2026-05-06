@@ -1,64 +1,52 @@
 ﻿# WebViewKit
 
-WebView2 기반 브라우저 기능을 공통 추상화하여  
-WinForms / WPF 환경에서 동일한 방식으로 사용할 수 있도록 제공하는 UI 통합 모듈입니다.
-
----
-
-## 💡 설계 의도
-
-WebView2 컨트롤은 플랫폼별(WPF / WinForms) API 차이와 초기화 방식 차이로 인해  
-코드 중복 및 유지보수 비용이 발생합니다.
-
-WebViewKit은 이를 해결하기 위해:
-
-- 공통 브라우저 기능 추상화
-- 플랫폼별 구현 분리
-- 동일한 API 제공
-
-을 목표로 설계되었습니다.
+WebView2 기반 공통 기능을 제공하는 핵심 라이브러리입니다.
 
 ---
 
 ## 📌 개요
 
-WebViewKit은 다음 기능을 공통 인터페이스로 제공합니다.
+WebViewKit은 WinForms / WPF 환경에서 WebView2를 사용할 때 발생하는  
+초기화, 비동기 처리, 이벤트 관리 복잡도를 제거하기 위해 설계된 라이브러리입니다.
 
-- 페이지 이동 (Navigate)
-- HTML 추출
-- 파일 다운로드 제어
-- Script 실행
-- WebMessage 통신
-- Crawling 모드 제어
+WebView2를 컨트롤 기반이 아닌 **확장 메서드 기반 API 구조**로 제공하여  
+일관된 방식으로 Navigation, Download, Script 실행 기능을 사용할 수 있도록 합니다.
 
 ---
 
-## 🚀 핵심 특징
+## ⚙ 핵심 특징
 
-- WebView2 초기화 과정 없이 즉시 사용 가능
-- 비동기 초기화 및 이벤트 대기 로직 내부 처리
-- WinForms / WPF 동일 API 제공
-
----
-
-## ⚙ 기술 특징
-
-- WebView2 기반 공통 API
-- 플랫폼 종속 코드 최소화
-- WinForms / WPF 통합 설계
-- 확장 가능한 구조
+- WebView2 초기화 표준화
+- Navigation / Download / Script 비동기 API 제공
+- WinForms / WPF 동일 동작 구조
+- 이벤트 기반 로직 캡슐화
+- 상태 기반 Navigation 처리 모델
+- 불필요한 동기화(Semaphore) 제거 구조
 
 ---
 
-## 🧱 구조
+## 🧩 구성
 
-```
-WebViewKit (Core Interface)
-        ↓
--------------------------
-|                       |
-WinForms                WPF
-(WebView2Wrapper)       (WebView2Wrapper)
-```
+### WebViewKit.Core
+- WebView2 확장 메서드 제공
+- Navigation / Download / Script 핵심 로직 구현
+- 상태 기반 WebView 처리 구조
+
+### WebViewKit.WinForms
+- WinForms WebView2 래퍼 제공
+- Core 기능을 WinForms 환경에 맞게 연결
+
+### WebViewKit.WPF
+- WPF WebView2 래퍼 제공
+- MVVM 구조 대응
+- Command 기반 확장 가능
 
 ---
+
+## 🔥 설계 방향
+
+- WebView2 초기화 책임은 플랫폼 계층에서 처리
+- Core는 기능 로직만 담당
+- UI 계층은 최소한의 래핑만 수행
+- Navigation 결과는 상태 기반 처리
+- 동기화가 아닌 이벤트 기반 흐름 유지

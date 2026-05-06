@@ -37,8 +37,8 @@ namespace WebViewKit.WinForms
                 await this.EnsureCoreWebView2Async();
 
                 // 2. 공통 확장 메서드에 등록 (락 생성 등)
-                await this.CoreWebView2.InitializeAsync();
-                await ApplySettingsInternalAsync();
+                this.CoreWebView2.Initialize();
+                ApplySettingsInternal();
                 await this.CoreWebView2.NavigateWithAwaitAsync(WebViewKitSettings.FirstUri);
             }
             catch (Exception ex)
@@ -47,21 +47,30 @@ namespace WebViewKit.WinForms
             }
         }
 
+        public async Task<NavigationResult> NavigateWithAwaitAsync(string url, int timeout = 60000)
+            => await this.CoreWebView2.NavigateWithAwaitAsync(url, timeout);
+
+        public async Task<bool> DownloadFileAsync(string fullPath)
+            => await this.CoreWebView2.DownloadFileAsync(fullPath);
+
+        public async Task<string> GetCurrentHtmlAsync()
+            => await this.CoreWebView2.GetCurrentHtmlAsync();
+
         public void ApplySettings()
         {
             // 디자인 모드이거나 엔진이 초기화 전이면 무시
             if (this.DesignMode || this.CoreWebView2 == null) 
                 return;
 
-            _ = ApplySettingsInternalAsync();
+            ApplySettingsInternal();
         }
 
-        private async Task ApplySettingsInternalAsync()
+        private void ApplySettingsInternal()
         {
             try
             {
                 // 락(SemaphoreSlim)이 포함된 UpdateSetting을 안전하게 대기
-                await this.CoreWebView2.UpdateSetting(
+                this.CoreWebView2.UpdateSetting(
                     this.WebViewKitSettings.IsCrawlingMode,
                     this.WebViewKitSettings.AreDefaultScriptDialogsEnabled,
                     this.WebViewKitSettings.IsStatusBarEnabled,

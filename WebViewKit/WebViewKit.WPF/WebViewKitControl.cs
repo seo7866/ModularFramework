@@ -43,8 +43,8 @@ namespace WebViewKit.WPF
                 await this.EnsureCoreWebView2Async();
 
                 // 2. 공통 확장 메서드 등록 (WebViewKit 프로젝트 참조 필요)
-                await this.CoreWebView2.InitializeAsync();
-                await ApplySettingsInternalAsync();
+                this.CoreWebView2.Initialize();
+                ApplySettingsInternal();
                 await this.CoreWebView2.NavigateWithAwaitAsync(WebViewKitSettings.FirstUri);
 
             }
@@ -67,19 +67,28 @@ namespace WebViewKit.WPF
 
         private void OnSettingsChanged(object sender, EventArgs e) => ApplySettings();
 
+        public async Task<NavigationResult> NavigateWithAwaitAsync(string url, int timeout = 60000)
+            => await this.CoreWebView2.NavigateWithAwaitAsync(url, timeout);
+
+        public async Task<bool> DownloadFileAsync(string fullPath)
+            => await this.CoreWebView2.DownloadFileAsync(fullPath);
+
+        public async Task<string> GetCurrentHtmlAsync()
+            => await this.CoreWebView2.GetCurrentHtmlAsync();
+
         public void ApplySettings()
         {
             if (this.CoreWebView2 == null || DesignerProperties.GetIsInDesignMode(this)) return;
 
             // Fire and Forget 패턴으로 비동기 업데이트 실행
-            _ = ApplySettingsInternalAsync();
+            ApplySettingsInternal();
         }
 
-        private async Task ApplySettingsInternalAsync()
+        private void ApplySettingsInternal()
         {
             try
             {
-                await this.CoreWebView2.UpdateSetting(
+                this.CoreWebView2.UpdateSetting(
                     WebViewKitSettings.IsCrawlingMode,
                     WebViewKitSettings.AreDefaultScriptDialogsEnabled,
                     WebViewKitSettings.IsStatusBarEnabled,
