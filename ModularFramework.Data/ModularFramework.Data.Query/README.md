@@ -163,6 +163,75 @@ MethodName.sql 추가
 
 ---
 
+## 3. 사용 방법 (쿼리 실행)
+
+DI로 등록된 서비스 내에서 메서드 기준으로 쿼리를 자동으로 매핑하여 사용할 수 있습니다.
+
+---
+
+### ✔ 예시 서비스
+
+```csharp
+
+using ModularFramework.Data.Query.Interfaces;
+
+public class UserService
+{
+    private readonly IQueryProvider _queryProvider;
+
+    public UserService(IQueryProvider queryProvider)
+    {
+        _queryProvider = queryProvider;
+    }
+
+    public async Task<User> GetUser(int id)
+    {
+        return await _queryProvider.ExecuteAsync<User>(MethodBase.GetCurrentMethod(), new { Id = id });
+    }
+}
+```
+
+---
+
+### ✔ 핵심 포인트
+
+```text
+
+MethodBase.GetCurrentMethod()
+   ↓
+메서드 정보 기반 쿼리 탐색
+   ↓
+Attribute 또는 Convention 경로 결정
+   ↓
+SQL 파일 로드
+   ↓
+실행
+
+```
+
+---
+
+### ✔ WPF / RelayCommand 예시
+
+```csharp
+
+public IRelayCommand LoadUserCommand => new RelayCommand(async () =>
+{
+    await _queryProvider.ExecuteAsync<User>(MethodBase.GetCurrentMethod(), new { Id = SelectedId });
+});
+
+```
+
+---
+
+### ✔ 특징
+
+- 메서드 기준 자동 매핑
+- Attribute / Convention 동일 방식 사용
+- DI 기반으로 주입
+- 호출 위치만으로 SQL 결정
+
+
 ## ⚡ Async 및 WPF 지원
 
 비동기 메서드 및 WPF RelayCommand 환경에서도  
