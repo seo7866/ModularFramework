@@ -61,8 +61,9 @@ using ModularFramework.Data.Query.Extensions;
 
 services.AddQueryProvider(options =>
 {
-    options.QueryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CustomQueries");
+    options.BasePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CustomQueries");
 });
+
 ```
 
 ## 2. 쿼리 매핑 방식 (중요)
@@ -113,21 +114,19 @@ public async Task<List<User>> GetUsers()
 
 ### 매핑 규칙
 
-```text
-
-Namespace → 폴더 경로
-Class Name → 폴더
-Method Name → 파일명
-
-```
-
----
-
-### 경로 생성 방식
+Type FullName 기준으로 SQL 파일 경로를 생성합니다.
 
 ```text
 
-{Namespace(Assembly 제외)}/{ClassName}/{MethodName}.sql
+Assembly Name 제거
+   ↓
+Type FullName 기준 사용
+   ↓
+Namespace → 폴더 구조 변환
+   ↓
+Class Name → 마지막 폴더
+   ↓
+Method Name → SQL 파일명
 
 ```
 
@@ -137,8 +136,9 @@ Method Name → 파일명
 
 ```text
 
-Namespace: MyApp.Services
-Class: UserService
+Assembly Name : MyApp
+Namespace: MyApp.Services.User
+Class: UserInfo
 Method: GetUser
 
 ```
@@ -147,7 +147,7 @@ Method: GetUser
 
 ```text
 
-/Services/UserService/GetUser.sql
+/Services/User/UserInfo/GetUser.sql
 
 ```
 
