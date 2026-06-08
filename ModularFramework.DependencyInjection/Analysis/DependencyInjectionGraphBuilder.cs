@@ -142,7 +142,7 @@ namespace ModularFramework.DependencyInjection.Analysis
 
                     // PropertyInfo를 포함하여 캐시에 추가
                     if (registered)
-                        bundleProperties.Add(new(prop, resolveType));
+                        bundleProperties.Add(new(prop, resolveType, injectAttr.Key));
                 }
 
                 if (!DependencyInjectionFactory.ServiceActivationCache.TryAdd(serviceType, new([.. bundleProperties])))

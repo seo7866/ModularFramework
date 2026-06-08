@@ -33,7 +33,10 @@ namespace ModularFramework.DependencyInjection.Runtime
                 // 이미 값 있으면 skip
                 if (prop.Getter(instance) != null)
                     continue;
-                prop.Setter(instance, sp.GetRequiredService(prop.ResolveType));
+                object propValue = !string.IsNullOrEmpty(prop.Key)
+                    ? sp.GetRequiredKeyedService(prop.ResolveType, prop.Key)
+                    : sp.GetRequiredService(prop.ResolveType);
+                prop.Setter(instance, propValue);
             }
 
             return instance;
@@ -47,11 +50,12 @@ namespace ModularFramework.DependencyInjection.Runtime
 
     class InjectPropertyInfo
     {
-        public InjectPropertyInfo(PropertyInfo property, Type resolveType)
+        public InjectPropertyInfo(PropertyInfo property, Type resolveType, string key)
         {
             this.Getter = ReflectionDelegateFactory.CreateGetter(property);
             this.Setter = ReflectionDelegateFactory.CreateSetter(property);
             this.ResolveType = resolveType;
+            this.Key = key;
         }
 
         public Action<object, object> Setter { get; }
@@ -62,5 +66,7 @@ namespace ModularFramework.DependencyInjection.Runtime
         /// 실제로 컨테이너에서 꺼낼 클래스 타입
         /// </summary>
         public Type ResolveType { get; } //= resolveType;
+
+        public string Key { get; }
     }
 }

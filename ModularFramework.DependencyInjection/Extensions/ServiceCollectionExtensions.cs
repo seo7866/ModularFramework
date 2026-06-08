@@ -49,6 +49,7 @@ namespace ModularFramework.DependencyInjection.Extensions
                 DependencyInjectionLifeTime lifeTime = DependencyInjectionLifeTime.Ignore;
                 bool hasLifeTime = false;
                 Type[] interfaces = null;
+                string key = string.Empty;
 
                 #region 1. 수동 override 우선
                 if (overrides.TryGetValue(type, out var overrideLifeTime))
@@ -69,6 +70,7 @@ namespace ModularFramework.DependencyInjection.Extensions
                     }
 
                     interfaces = attr.InterfaceTypes;
+                    key = attr.Key;
                 }
                 #endregion
 
@@ -93,37 +95,70 @@ namespace ModularFramework.DependencyInjection.Extensions
                 }
                 #endregion
 
-                #region 5. 클래스 등록
-                if (attr is DependencyServiceAttribute)
+                #region 5. 클래스 등록 및 6. 인터페이스 등록 통합 (Keyed 및 DependencyService 완전 대응)
+
+                bool isDependencyService = attr is DependencyServiceAttribute;
+
+                // ======================================================
+                // 1. IMPLEMENTATION 등록 (단일화)
+                // ======================================================
+
+                if (isDependencyService)
                 {
                     dependencyServices.Add(type);
-                    services.Add(new ServiceDescriptor(type, sp => DependencyInjectionFactory.CreateDependencyService(sp, type), lifetime));
+
+                    services.Add(new ServiceDescriptor(
+                        type,
+                        sp => DependencyInjectionFactory.CreateDependencyService(sp, type),
+                        lifetime));
                 }
                 else
                 {
-                    services.Add(new ServiceDescriptor(type, type, lifetime));
+                    if (!string.IsNullOrEmpty(key))
+                        services.AddKeyed(lifetime, type, key, type);
+                    else
+                        services.Add(new ServiceDescriptor(type, type, lifetime));
                 }
-                #endregion
 
-                #region 6. 인터페이스 등록 (중요: 덮어쓰기 금지)
+                // ======================================================
+                // 2. INTERFACE 등록
+                // ======================================================
+
                 if (interfaces != null && interfaces.Length > 0)
                 {
                     foreach (var i in interfaces)
                     {
                         interfaceMap.TryAdd(i, []);
 
-                        // 이미 해당 구현체가 등록되어 있으면 skip
                         if (interfaceMap[i].Contains(type))
                             continue;
 
-                        services.Add(new ServiceDescriptor(
-                            i,
-                            sp => sp.GetRequiredService(type),
-                            lifetime));
+                        if (isDependencyService)
+                        {
+                            services.Add(new ServiceDescriptor(
+                                i,
+                                sp => sp.GetRequiredService(type),
+                                lifetime));
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(key))
+                            {
+                                services.AddKeyed(lifetime, i, key, type);
+                            }
+                            else
+                            {
+                                services.Add(new ServiceDescriptor(
+                                    i,
+                                    sp => sp.GetRequiredService(type),
+                                    lifetime));
+                            }
+                        }
 
                         interfaceMap[i].Add(type);
                     }
                 }
+
                 #endregion
 
                 lifetimeMap[type] = lifetime;
@@ -134,6 +169,23 @@ namespace ModularFramework.DependencyInjection.Extensions
             DependencyInjectionGraphBuilder.AnalyzeDependencyBundles(dependencyServices, interfaceMap, registeredTypes);
 
             return services;
+        }
+
+        private static void AddKeyed(this IServiceCollection services, ServiceLifetime lifetime, 
+            Type serviceType, object key, Type implementationType)
+        {
+            switch (lifetime)
+            {
+                case ServiceLifetime.Singleton: 
+                    services.AddKeyedSingleton(serviceType, key, implementationType); 
+                    break;
+                case ServiceLifetime.Scoped: 
+                    services.AddKeyedScoped(serviceType, key, implementationType); 
+                    break;
+                case ServiceLifetime.Transient: 
+                    services.AddKeyedTransient(serviceType, key, implementationType); 
+                    break;
+            }
         }
     }
 }

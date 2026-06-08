@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,13 +18,16 @@ namespace ModularFramework.DependencyInjection.Attributes
     /// - 인터페이스나 abstract class는 허용되지 않습니다.
     /// - DI 분석 단계에서 검증됩니다.
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class DependencyInjectAttribute : Attribute
     {
         /// <summary>
         /// 실제 DI 컨테이너에서 resolve할 구체 타입
         /// </summary>
         internal Type ResolveType { get; init; }
+
+
+        public string Key { get; init; }
 
         /// <summary>
         /// 특정 구현체를 명시적으로 지정하여 DI 매핑을 결정합니다.
