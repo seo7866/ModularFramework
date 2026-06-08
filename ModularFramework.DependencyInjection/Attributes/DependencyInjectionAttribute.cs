@@ -25,5 +25,6 @@ namespace ModularFramework.DependencyInjection.Attributes
         /// 서비스 클래스가 구현하며, 컨테이너에 함께 등록될 인터페이스 타입 목록을 가져옵니다.
         /// </summary>
         public Type[] InterfaceTypes { get; } = interfaces;
+        
     }
 }

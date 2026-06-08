@@ -4,14 +4,32 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+    <IncludeBuildOutput>true</IncludeBuildOutput>
+    <Authors>Jeong-yeol Seo</Authors>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.8" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ModularFramework.Core\ModularFramework.Core.csproj" />
+
+    <ProjectReference Include="..\ModularFramework.DependencyInjection.Analyzers\ModularFramework.DependencyInjection.Analyzers.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
+
+  <Target Name="IncludeAnalyzersInPackage" BeforeTargets="_GetPackageFiles">
+    <ItemGroup>
+      <_PackageFiles Include="..\ModularFramework.DependencyInjection.Analyzers\bin\$(Configuration)\netstandard2.0\ModularFramework.DependencyInjection.Analyzers.dll">
+        <PackagePath>analyzers/dotnet/cs</PackagePath>
+      </_PackageFiles>
+    </ItemGroup>
+  </Target>
 
 </Project>

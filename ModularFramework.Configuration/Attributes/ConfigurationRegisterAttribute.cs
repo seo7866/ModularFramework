@@ -12,7 +12,7 @@ namespace ModularFramework.Configuration.Attributes
     /// 특정 JSON 파일의 섹션과 자동으로 바인딩되어 DI 컨테이너에 싱글톤으로 등록됩니다.
     /// </remarks>
     /// <param name="fileName">해당 설정 데이터가 포함된 JSON 파일명 (예: "appsettings.json" 또는 "custom.json")</param>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class ConfigurationRegisterAttribute(string fileName = "") : Attribute
     {
         /// <summary>

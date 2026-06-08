@@ -5,6 +5,8 @@
     <Nullable>disable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Jeong-yeol Seo</Authors>
   </PropertyGroup>
 
   <ItemGroup>

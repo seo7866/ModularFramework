@@ -1,10 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using ModularFramework.Core.Resolvers;
+using ModularFramework.DependencyInjection.Analysis;
 using ModularFramework.DependencyInjection.Attributes;
 using ModularFramework.DependencyInjection.Enums;
+using ModularFramework.DependencyInjection.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Security.AccessControl;
 using System.Text;
 
 namespace ModularFramework.DependencyInjection.Extensions
@@ -22,47 +26,58 @@ namespace ModularFramework.DependencyInjection.Extensions
         /// <param name="services">DI 컨테이너</param>
         /// <param name="overrides">코드 레벨에서 특정 타입의 수명 주기를 강제로 덮어쓰기 위한 딕셔너리</param>
         /// <returns>구성이 완료된 IServiceCollection</returns>
-        public static IServiceCollection AddAutoRegister(this IServiceCollection services, Dictionary<Type, DependencyInjectionLifeTime> overrides = null)
+        public static IServiceCollection AddAutoRegister(
+            this IServiceCollection services,
+            Dictionary<Type, DependencyInjectionLifeTime> overrides = null)
         {
             overrides ??= [];
+
             var currentLibrary = Assembly.GetExecutingAssembly();
             var assemblies = AssemblyDependencyResolver.GetDependentAssemblies(currentLibrary);
-            var types = assemblies.SelectMany(a => a.GetTypes())
-                                  .Where(t => t.IsClass && !t.IsAbstract);
 
-            foreach (Type type in types)
+            var types = assemblies
+                .SelectMany(a => a.GetTypes())
+                .Where(t => t.IsClass && !t.IsAbstract);
+
+            List<Type> dependencyServices = [];
+
+            // 기존 DI 상태 분석 (수동 등록 포함)
+            var (interfaceMap, lifetimeMap, registeredTypes) = services.AnalyzeServiceTypeMaps();
+
+            foreach (var type in types)
             {
-                // 수명 주기 결정을 위한 임시 변수 (기본값으로 Ignore 설정 가능)
-                DependencyInjectionLifeTime finalLifeTime = DependencyInjectionLifeTime.Ignore;
-                bool isSet = false;
+                DependencyInjectionLifeTime lifeTime = DependencyInjectionLifeTime.Ignore;
+                bool hasLifeTime = false;
                 Type[] interfaces = null;
 
-                // 1. 딕셔너리(오버라이드) 확인 - 최우선
-                if (overrides.TryGetValue(type, out DependencyInjectionLifeTime overrideLifeTime))
+                #region 1. 수동 override 우선
+                if (overrides.TryGetValue(type, out var overrideLifeTime))
                 {
-                    finalLifeTime = overrideLifeTime;
-                    isSet = true;
+                    lifeTime = overrideLifeTime;
+                    hasLifeTime = true;
                 }
+                #endregion
 
-                // 2. 어트리뷰트 확인
-                DependencyInjectionAttribute attr = type.GetCustomAttribute<DependencyInjectionAttribute>();
+                #region 2. Attribute 기반 설정
+                var attr = type.GetCustomAttribute<DependencyInjectionAttribute>();
                 if (attr != null)
                 {
-                    // 딕셔너리 설정이 없을 때만 어트리뷰트 값 사용
-                    if (!isSet)
+                    if (!hasLifeTime)
                     {
-                        finalLifeTime = attr.DependencyInjectionLifeTimeType;
-                        isSet = true;
+                        lifeTime = attr.DependencyInjectionLifeTimeType;
+                        hasLifeTime = true;
                     }
+
                     interfaces = attr.InterfaceTypes;
                 }
+                #endregion
 
-                // 3. 등록 여부 결정 (설정이 없거나 Ignore면 패스)
-                if (!isSet || finalLifeTime == DependencyInjectionLifeTime.Ignore)
+                #region 3. 등록 대상 아님
+                if (!hasLifeTime || lifeTime == DependencyInjectionLifeTime.Ignore)
                     continue;
+                #endregion
 
-                // 4. 서비스 수명 주기 매핑
-                ServiceLifetime lifetime = finalLifeTime switch
+                var lifetime = lifeTime switch
                 {
                     DependencyInjectionLifeTime.Singleton => ServiceLifetime.Singleton,
                     DependencyInjectionLifeTime.Scoped => ServiceLifetime.Scoped,
@@ -70,19 +85,53 @@ namespace ModularFramework.DependencyInjection.Extensions
                     _ => ServiceLifetime.Transient
                 };
 
-                // 5. 본체 등록
-                services.Add(new ServiceDescriptor(type, type, lifetime));
+                #region 4. 수동 등록 보호 (핵심)
+                // 이미 수동으로 등록된 경우 → 자동 등록 절대 금지
+                if (services.Any(d => d.ServiceType == type || d.ImplementationType == type))
+                {
+                    continue; // 철학: manual > auto
+                }
+                #endregion
 
-                // 6. 인터페이스 등록
+                #region 5. 클래스 등록
+                if (attr is DependencyServiceAttribute)
+                {
+                    dependencyServices.Add(type);
+                    services.Add(new ServiceDescriptor(type, sp => DependencyInjectionFactory.CreateDependencyService(sp, type), lifetime));
+                }
+                else
+                {
+                    services.Add(new ServiceDescriptor(type, type, lifetime));
+                }
+                #endregion
+
+                #region 6. 인터페이스 등록 (중요: 덮어쓰기 금지)
                 if (interfaces != null && interfaces.Length > 0)
                 {
-                    foreach (Type i in interfaces)
+                    foreach (var i in interfaces)
                     {
-                        // 본체 인스턴스를 공유하도록 팩토리 방식으로 등록
-                        services.Add(new ServiceDescriptor(i, sp => sp.GetRequiredService(type), lifetime));
+                        interfaceMap.TryAdd(i, []);
+
+                        // 이미 해당 구현체가 등록되어 있으면 skip
+                        if (interfaceMap[i].Contains(type))
+                            continue;
+
+                        services.Add(new ServiceDescriptor(
+                            i,
+                            sp => sp.GetRequiredService(type),
+                            lifetime));
+
+                        interfaceMap[i].Add(type);
                     }
                 }
+                #endregion
+
+                lifetimeMap[type] = lifetime;
+                registeredTypes.Add(type);
             }
+
+            // DependencyService 전용 graph 분석
+            DependencyInjectionGraphBuilder.AnalyzeDependencyBundles(dependencyServices, interfaceMap, registeredTypes);
 
             return services;
         }

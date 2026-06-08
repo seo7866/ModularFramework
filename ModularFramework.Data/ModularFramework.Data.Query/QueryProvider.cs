@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace ModularFramework.Data.Query
 {
-    public class QueryProvider : IQueryExecutor
+    public sealed class QueryProvider : IQueryExecutor
     {
         private readonly ConcurrentDictionary<MethodBase, QueryCacheEntry> _methodCache = new();
 
