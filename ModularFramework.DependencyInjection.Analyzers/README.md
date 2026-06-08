@@ -29,8 +29,7 @@ Analyzer는 이러한 규칙 위반을 컴파일 단계에서 검출하여 개�
 
 ### MDI001
 
-DependencyService 클래스는 생성자를 사용할 수 없으며, 
-반드시 parameterless constructor 1개만 허용됩니다.
+DependencyServiceAttribute가 선언된 클래스는 생성자를 정의할 수 없습니다.
 
 #### 잘못된 예
 
@@ -78,11 +77,7 @@ public class ExampleService
 
 ```
 
-이 Analyzer는 DependencyServiceAttribute가 선언된 클래스에만 적용됩니다.
-
-DependencyService가 선언되지 않은 일반 클래스는 분석 대상에 포함되지 않습니다.
-
----
+이 Analyzer는 DependencyServiceAttribute가 선언된 클래스만 분석합니다.
 
 ---
 
@@ -99,20 +94,11 @@ Syntax Tree가 아닌 INamedTypeSymbol 기준으로 분석하며,
 
 ModularFramework.DependencyInjection은 다음 원칙을 따릅니다.
 
-- Constructor Injection 금지
+- 생성자 사용 금지
 - Property Injection 사용
 - 선언 기반 DI 구성
 - 런타임 예외 최소화
 - 컴파일 타임 검증 우선
-
----
-
-## 🧠 설계 적용 범위
-
-이 Analyzer는 Constructor Injection을 금지하고,
-Property Injection 기반 DI 구조를 강제하기 위한 규칙 엔진입니다.
-
-런타임 오류를 방지하기 위해 컴파일 타임 단계에서 구조를 검증합니다.
 
 ---
 
