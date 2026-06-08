@@ -29,7 +29,8 @@ Analyzer는 이러한 규칙 위반을 컴파일 단계에서 검출하여 개�
 
 ### MDI001
 
-DependencyService는 생성자를 가질 수 없습니다.
+DependencyService 클래스는 생성자를 사용할 수 없으며, 
+반드시 parameterless constructor 1개만 허용됩니다.
 
 #### 잘못된 예
 
@@ -68,14 +69,29 @@ public class UserService
 
 다음 조건을 모두 만족하는 클래스:
 
+```csharp
 
 [DependencyService(...)]
 public class ExampleService
 {
 }
 
+```
 
-Analyzer는 DependencyServiceAttribute가 선언된 클래스만 검사합니다.
+이 Analyzer는 DependencyServiceAttribute가 선언된 클래스에만 적용됩니다.
+
+DependencyService가 선언되지 않은 일반 클래스는 분석 대상에 포함되지 않습니다.
+
+---
+
+---
+
+## ⚙ 분석 방식
+
+이 Analyzer는 Roslyn Symbol 기반 분석을 사용합니다.
+
+Syntax Tree가 아닌 INamedTypeSymbol 기준으로 분석하며,
+컴파일 단계에서 DependencyService 클래스의 구조를 검사합니다.
 
 ---
 
@@ -88,6 +104,15 @@ ModularFramework.DependencyInjection은 다음 원칙을 따릅니다.
 - 선언 기반 DI 구성
 - 런타임 예외 최소화
 - 컴파일 타임 검증 우선
+
+---
+
+## 🧠 설계 적용 범위
+
+이 Analyzer는 Constructor Injection을 금지하고,
+Property Injection 기반 DI 구조를 강제하기 위한 규칙 엔진입니다.
+
+런타임 오류를 방지하기 위해 컴파일 타임 단계에서 구조를 검증합니다.
 
 ---
 
