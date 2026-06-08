@@ -34,9 +34,12 @@ ModularFramework는 기존 .NET 애플리케이션 개발에서 발생하는 다
 ### Dependency Injection
 Attribute 기반 DI 자동 등록 모듈
 
-- Service / ViewModel 자동 등록
-- Reflection 기반 어셈블리 스캔
-- 수동 Service 등록 코드 제거
+- Attribute 기반 DI 등록 구조
+- Interface → Implementation 매핑 구성
+- Property Injection 기반 주입 방식
+- DependencyServiceAttribute가 선언된 클래스는 생성자 정의가 허용되지 않음
+- Dependency Graph 기반 resolve 처리
+- Analyzer 기반 컴파일 타임 규칙 검증 (MDI001)
 
 ---
 
@@ -152,10 +155,24 @@ Application Runtime
 
 ## 📂 Modules
 
-- ModularFramework.DependencyInjection
-- ModularFramework.Configuration
-- ModularFramework.Data
-- WebViewKit
+- ModularFramework.DependencyInjection  
+  - 구조 강제형 DI 시스템 (Property Injection 기반)
+  - Attribute 기반 선언형 등록 구조
+  - Interface → Implementation 매핑
+  - Dependency Graph 기반 resolve
+  - Analyzer 기반 구조 규칙 검증 (MDI001)
+
+- ModularFramework.Configuration  
+  - Attribute 기반 설정 자동 바인딩
+  - 런타임 Configuration 생성
+
+- ModularFramework.Data  
+  - 파일 기반 Query Provider
+  - 메서드 기반 SQL 매핑 구조
+
+- WebViewKit  
+  - WebView2 기능 추상화 API
+  - UI와 로직 분리 구조
 
 ---
 
