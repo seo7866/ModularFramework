@@ -31,7 +31,7 @@
 - ServiceLifetime 자동 적용
 - Interface / Concrete 자동 매핑
 - Property Injection 지원
-- Constructor Injection 제한
+- DependencyServiceAttribute가 선언된 클래스는 생성자 정의가 허용되지 않음
 - Analyzer 기반 규칙 강제
 - Runtime dependency graph 생성
 - IHost 기반 실행 구조
@@ -54,12 +54,12 @@ DependencyInjectAttribute를 상속하며 다음 역할을 수행:
 
 - DI 등록 대상 마킹
 - 서비스 자동 등록
-- 생성된 인스턴스의 property injection 수행 (핵심)
-- 런타임에서 객체 생성 및 injection 트리거 역할
+- Property Injection 대상 지정 (핵심)
+- DI pipeline에서 생성 및 injection 대상임을 나타내는 메타데이터 역할
 
 즉 단순 marker가 아니라:
 
-> "등록 + 객체 생성 + property injection 수행 책임"
+> "DI pipeline에서 객체 생성 및 Property Injection 대상임을 나타내는 메타데이터 역할"
 
 ---
 
@@ -150,8 +150,7 @@ public class Consumer
 
 ## ⚠ 규칙 (Analyzer enforced)
 
-- constructor는 parameterless만 허용
-- constructor injection 금지
+- 생성자 사용 금지 (구조적 제한)
 - DependencyInject는 concrete type만 허용
 - interface ambiguity는 Attribute로 해결
 - DI 규칙 위반 시 컴파일 타임 오류
