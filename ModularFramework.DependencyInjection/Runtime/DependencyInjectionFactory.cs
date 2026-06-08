@@ -23,7 +23,7 @@ namespace ModularFramework.DependencyInjection.Runtime
                 );
             }
             // 1. 객체 생성 (parameterless constructor)
-            object instance = Activator.CreateInstance(serviceType)
+            object instance = ActivatorUtilities.CreateInstance(sp, serviceType)
                  ?? throw new InvalidOperationException(
                      $"[DependencyInjection] '{serviceType.FullName}' 생성 실패"
                  );
